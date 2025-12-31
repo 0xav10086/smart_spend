@@ -1,33 +1,48 @@
-// This is your Prisma schema file,
+// This is Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// 数据源配置
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
 
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+// 1. 用户表
+model User {
+  id            Int           @id @default(autoincrement())
+  username      String        @unique
+  password      String        // 存储加密后的哈希值
+  telegramId    String?       @unique // 用于绑定 Telegram Bot 通知
+  monthlyBudget Float         @default(0) // 每月总预算
+  createdAt     DateTime      @default(now())
+  transactions  Transaction[]
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// 2. 账单分类表 (如：餐饮、交通、工资)
+model Category {
+  id           Int           @id @default(autoincrement())
+  name         String
+  icon         String?       // 存储 Element Plus 图标名或 Emoji
+  color        String?       // 存储 Tailwind 颜色值或十六进制，用于 ECharts
+  type         String        // "EXPENSE" (支出) 或 "INCOME" (收入)
   transactions Transaction[]
 }
 
+// 3. 账单记录表
 model Transaction {
   id          Int      @id @default(autoincrement())
-  amount      Float
-  type        String   // "income" or "expense"
-  category    String
-  description String?
+  amount      Float    // 金额
+  type        String   // "EXPENSE" 或 "INCOME"
+  note        String?  // 备注
   date        DateTime @default(now())
-  userId      Int
+
+  // 关联关系
   user        User     @relation(fields: [userId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  userId      Int
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  Int
 }

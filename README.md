@@ -54,8 +54,8 @@
 
 ### 第一阶段：基础构建 (MVP)
 
-* [ ] 搭建 Vite + TS + Tailwind + Element Plus 基础环境。
-* [ ] 后端 Node.js 环境搭建及 SQLite 数据库表设计。
+* [x] 搭建 Vite + TS + Tailwind + Element Plus 基础环境。
+* [x] 后端 Node.js 环境搭建及 SQLite 数据库表设计。
 * [ ] 实现基础的用户登录与 JWT 鉴权。
 * [ ] 完成基础的收支录入表单与账单列表。
 
@@ -106,4 +106,3 @@ npm run start
 ## 📄 开源协议
 
 本项目采用 [MIT License](https://www.google.com/search?q=LICENSE) 开源。
-

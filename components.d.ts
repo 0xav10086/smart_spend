@@ -12,6 +12,6 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ElButton: typeof import('element-plus/es')['ElButton']
-    Login: typeof import('./src/components/Login.vue')['default']
+    Login: typeof import('./src/views/Login.vue')['default']
   }
 }

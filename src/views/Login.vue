@@ -1,7 +1,33 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '../stores/user'
+
+const router = useRouter()
+const userStore = useUserStore()
+
+const username = ref('')
+const password = ref('')
+
+const handleLogin = () => {
+  // 模拟登录：因为路由守卫需要检查 Token，所以这里必须设置一个非空值
+  // 在未来对接后端时，这里会替换为 axios.post('/api/login')
+  if (username.value && password.value) {
+    userStore.setToken('mock-token-' + Date.now()) // 设置模拟 Token
+    router.push('/home') // 跳转到主页
+  } else {
+    alert('Please enter username and password')
+  }
+}
+
+const handleNotFound = () => {
+  // 跳转到一个未定义的路径，路由系统会自动匹配到 404 页面
+  router.push('/feature-not-implemented')
+}
 </script>
 
 <template>
+<!--  source by https://codepen.io/Gogh/pen/gOqVqBx-->
   <!--ring div starts here-->
   <div class="login-container">
   <div class="ring">
@@ -11,17 +37,17 @@
     <div class="login">
       <h2>Login</h2>
       <div class="inputBx">
-        <input type="text" placeholder="Username">
+        <input type="text" placeholder="Username" v-model="username">
       </div>
       <div class="inputBx">
-        <input type="password" placeholder="Password">
+        <input type="password" placeholder="Password" v-model="password">
       </div>
       <div class="inputBx">
-        <input type="submit" value="Sign in">
+        <input type="submit" value="Sign in" @click="handleLogin">
       </div>
       <div class="links">
-        <a href="#">Forget Password</a>
-        <a href="#">Signup</a>
+        <a href="#" @click.prevent="handleNotFound">Forget Password</a>
+        <a href="#" @click.prevent="handleNotFound">Signup</a>
       </div>
     </div>
   </div>
@@ -144,5 +170,4 @@
   color: #fff;
   text-decoration: none;
 }
-
 </style>

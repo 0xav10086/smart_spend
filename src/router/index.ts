@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
-import { useUserStore } from '../stores/user'
+import { useUserStore } from '@/stores/user'
 
 // 定义路由元信息类型
 declare module 'vue-router' {
@@ -27,6 +27,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'NotFound',
     component: () => import('../views/404.vue'),
     meta: {
+      requiresAuth: false,
       title: '404 Not Found'
     }
   }
@@ -38,7 +39,7 @@ const router = createRouter({
 })
 
 // 路由守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   const userStore = useUserStore()
 
   // 如果页面需要登录 且 用户没有 Token

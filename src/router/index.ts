@@ -1,4 +1,5 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
+import { useUserStore } from '../stores/user'
 
 // 定义路由元信息类型
 declare module 'vue-router' {
@@ -37,38 +38,15 @@ const router = createRouter({
 })
 
 // 路由守卫
-router.beforeEach(async (to, from) => {
-  const token = localStorage.getItem('token')
+router.beforeEach((to, from, next) => {
+  const userStore = useUserStore()
 
-  // 检查路由是否需要认证
-  if (to.meta.requiresAuth) {
-    if (!token) {
-      // 未登录，重定向到登录页
-      return { name: 'Login', query: { redirect: to.fullPath } }
-    }
-
-    try {
-      // 验证token有效性（可选）
-      const isValid = await verifyToken(token)
-      if (!isValid) {
-        localStorage.removeItem('token')
-        return { name: 'Login' }
-      }
-    } catch {
-      return { name: 'Login' }
-    }
-  }
-
-  // 如果已经登录但访问登录页，重定向到首页
-  if (to.name === 'Login' && token) {
-    return { name: 'Home' }
+  // 如果页面需要登录 且 用户没有 Token
+  if (to.meta.requiresAuth && !userStore.token) {
+    next('/') // 拦住，去登录 (登录页路径是 /)
+  } else {
+    next() // 放行
   }
 })
-
-// 验证token的函数（示例）
-async function verifyToken(token: string): Promise<boolean> {
-  // 这里实现token验证逻辑
-  return true
-}
 
 export default router
